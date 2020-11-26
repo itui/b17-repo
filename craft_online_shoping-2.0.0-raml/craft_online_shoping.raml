@@ -1,0 +1,169 @@
+#%RAML 1.0
+title: craft_online_shoping
+version: 1.1
+mediaType: 
+- application/json
+uses:
+  lib: library.raml 
+documentation:
+  - !include documentation.raml
+  
+/product:
+
+  type:
+    lib.ProductResourceType
+                     
+  is:
+          - lib.traites         
+    
+  /{productID}:
+    get:
+      description:    get product by id
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productIDDataTypes
+              example: !include example/productID.raml
+                                                 
+    is:
+          - lib.traites         
+
+ 
+     
+/users: 
+                        
+  type:
+     lib.UserResourceType
+             
+                 
+  is:
+                - lib.traites          
+ 
+  /{userid}:
+    
+    get:
+        description: select users by id
+        responses:
+          200:
+            description: succes finding userid
+            body:
+              application/json:
+                type: lib.userdatatype
+                example: !include example/userid.raml
+          
+                   
+    is:
+                  - lib.traites         
+
+                                                               
+    post:
+      description: new file created successfully 
+      responses:
+        201:
+         body:
+          application/json:
+            type: lib.userdatatype
+            example:
+              {
+                username: "samuel",
+                email: "samson@example.com",
+                userid: 123456,
+                password: 12
+              }
+       
+      is:
+                  - lib.traites                           
+        
+/orders:
+   
+  type:
+      lib.OrderResourceType
+
+  post:
+        description: insert order information
+        responses:
+          201:
+            body:
+              application/json:
+                type: lib.POSTorder_DataTypes
+                example:
+                    {
+                      delivery_address: "4444 seminaryrd Apt 100",
+                      phone_no: 5715715711,
+                      card_no: 125125125321,
+                      expdate: "2/12/2020",
+                      security_no: 254
+                      
+                    }                    
+  is:
+                - lib.traites         
+                                                  
+  /{orderid}:
+      get:
+        description: get orders by id
+        responses:
+          200:
+            description: get specific order by id
+            body:
+              application/json:
+                type: lib.orderDataType
+                example: !include example/orderid.raml
+     
+
+
+      is:
+              
+                    - lib.traites       
+  /{OrderbyuserID}:
+    get:
+      description: get orders by userid(15)
+      responses:
+        200:
+          description: get specific order by userid
+          body:
+            application/json:
+              type: lib.orderDataType
+              example:  
+                {
+                  orderName: "apple",
+                  orderid: 456236,
+                  orderType: "premium",
+                  "amount": 587,
+                  "created": 1589068800002,
+                  "discountid": 200,
+                  "modified": 1589068800005,
+                  "status": "ok",
+                  "userid": 1000,
+                  "addressid": 2589068800001
+
+                }            
+      is:
+              
+                    - lib.traites                          
+          
+  
+                
+/categories: 
+   
+  type:
+       lib.CatagoryResourceType
+
+  is:
+              - lib.traites         
+  /{categoryid}:
+      get:
+        description: get specific catagorie by id
+        responses:
+          200:
+            description: success
+            body:
+              application/json:
+                type: lib.catagoriesDataType
+                example: !include example/catagoryid.raml
+      
+      is:
+                    lib.traites            
+                
+                          
+                                  

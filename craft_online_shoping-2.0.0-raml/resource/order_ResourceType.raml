@@ -1,0 +1,10 @@
+#%RAML 1.0 ResourceType
+get:
+    description: get product return list of all <<resourcePathName>>orders.
+    responses:
+      200:
+        description: all orders.
+        body:
+          application/json:
+            type: lib.orderDataType[]
+            example:  !include ../example/order.raml 

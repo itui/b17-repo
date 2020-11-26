@@ -1,0 +1,83 @@
+#%RAML 1.0 Extension
+extends: craft_online_shoping.raml  
+resourceTypes:
+  AdminResourceType: !include ../resource/AdminresourceType.raml
+ 
+
+/Adminproduct:
+  type:
+    AdminResourceType:
+        resourcePathName: product
+        resourcePath: product
+  post:
+  put:
+  delete:
+      responses:
+          200:
+              body:
+                  application/json:
+                      example:
+                        {
+                          message: "has all product previlages"
+                        }
+  is:
+    - lib.trait1
+                     
+/Adminuser:
+  type:
+    AdminResourceType:
+      resourcePathName: users
+      resourcePath: users
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                message: "has all listed user previllages"
+              }
+  is:
+    - lib.trait1            
+/Adminorder:
+  type:
+    AdminResourceType:
+      resourcePathName: order
+      resourcePath: order
+  post:
+  put:
+  delete:
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  message: "has all listed user previllages"
+                }
+  is:
+    - lib.trait1              
+/Admincatagory:
+    type:
+      AdminResourceType:
+        resourcePathName: catagory
+        resourcePath: catagory  
+    post:
+    put:
+    delete:
+        responses:
+          200:
+            body:
+              application/json:
+                example:
+                  {
+                    message: "has all listed user previllages"
+                  }
+    is:
+    - lib.trait1                                
+                                                                                                                                
+
+                                                                                                        
+                            
+                                                                                                                
+                                
