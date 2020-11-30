@@ -1,2 +1,2 @@
-title: online-shopping group C 
+title: online-shopping-group-C 
 teams: Group C
