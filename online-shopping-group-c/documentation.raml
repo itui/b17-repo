@@ -1,0 +1,19 @@
+#%RAML 1.0 DocumentationItem
+title: online-shopping-group-c
+
+content: This project content four resources called – Product, user, Order and Category. 
+  1. Under Products resource, we have 2 nested resources like product by ID and Category by ID
+  2. Under Users resource, we have User by ID as nested resource
+  3. Under Category resource, we have Category by ID as nested resource
+  4. Under Order resource, we have Order by ID and Category by ID as nested resource.
+  This Rest API contain several http methods like – Get, Put, Post & Delete
+  -Http status codes like – 200 successful, 201 created, 404 not found, and 500 server error 
+  - This project also contains multiple examples, Resource Types, Types, Trits, and Library to keep the root file more organized and clearer.   
+  -Admin extension also created as extended from the root file to show all 4 resources and nested resources.
+    Under Admin we also used Http methods like Get, put, post and Delete. We also show the status code 200, 201, 404, and 500 to name a few that we used.
+  - In this project folder, we also added a security scheme method called OAuth 2.0 token and status code 401 not authorized, and 500 authorization is expired
+
+baseUri: https://api.online-shopping.com/{version}
+securedBy: [oauth 2.0]
+securitySchemes:  
+  

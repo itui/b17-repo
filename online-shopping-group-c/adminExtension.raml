@@ -1,0 +1,147 @@
+#%RAML 1.0 Extension
+extends: online-shopping-group-c.raml
+
+/Adminproduct:
+  # get:
+  #   description: get all products
+  #   responses:
+  #     200:
+  #       body:
+  #         application/json:
+  #           type: lib.productType[]
+  #           example: !include Examples/products.raml
+
+  post:
+    description: add product
+    body:
+      application/json:
+        type: lib.productType
+        example: !include Examples/product.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                message: "product added"
+              }
+          
+  put:
+  type:
+    lib.putResource:
+      resourcePathName: product  
+      resourcePath: product
+
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+              message: "product delete by admin"
+            }
+
+
+/adminuser:  
+  # get:
+  #   description: get all user
+  #   responses:
+  #     200:
+  #       body:
+  #         application/json:
+  #           type: lib.userType[]
+  #           example: !include Examples/users.raml 
+  delete:  
+    description: delete a user by admin                           
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+              message: "user delete by admin"
+            }
+
+/Admincatagory:
+  get:
+    description: get all category
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.categoryType[]
+            example: !include Examples/categories.raml
+
+  post:
+    description: create category
+    body:
+      application/json:
+        type: lib.categoryType
+        example: !include Examples/category.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                message: "category created"
+              }
+          
+  put:
+  type:
+    lib.putResource:
+      resourcePathName: category  
+      resourcePath: category
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+              message: "category delete by admin"
+            }
+            
+/Adminorder:
+  # description: get all orders
+  # get:
+  #   responses:
+  #     200:
+  #       body:
+  #         application/json:
+  #           type: lib.orderType[]
+  #           example: !include Examples/orders.raml 
+  # post:
+  #   description: create order by admin
+  #   body:
+  #     application/json:
+  #       example: !include Examples/order.raml
+  #   responses:
+  #     201:
+  #       body:
+  #         application/json:
+  #           example:
+  #             {
+  #               message: "order created by admin"
+  #             }
+          
+  # put:
+  # type:
+  #   lib.putResource:
+  #     resourcePathName: order  
+  #     resourcePath: order
+
+  # delete:   
+  #   description: delete by admin  
+  #   responses:
+  #     200:
+  #       body:
+  #         application/json:
+  #           example:
+  #             {
+  #               message: "order delete by admin"
+  #             }      
+
+
+

@@ -1,0 +1,203 @@
+#%RAML 1.0
+title: online-shopping-group-c
+version: 1.0.0
+#baseUri: http://localhost:8081/
+
+uses:  
+  lib: library.raml
+
+/products:
+  description: get all products
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.productType[]
+            example: !include Examples/products.raml             
+            
+  is:
+    - lib.error 
+   
+      
+  /{productsid}:
+    description: get product by product id
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productType
+              example: !include Examples/product.raml             
+                 
+    is:
+      - lib.error
+
+    # type:
+    #   lib.putResource:
+    #     resourcePathName: product
+    #     resourcePath: product
+
+  /{categoryid}:
+    description: get product by category id
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productType
+              example: !include Examples/product.raml             
+                  
+    is:
+      - lib.error
+
+/users:
+  get:
+    description: get all users
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.userType[]
+            example: !include Examples/users.raml
+
+  is:
+    - lib.error
+
+  post:
+    description: create user
+    body:
+      application/json:
+        example: !include Examples/user.raml
+          
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                message: "user created"
+              }
+ 
+  /{usersid}:
+    get:
+      description: get user by user id
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.userType
+              example: !include Examples/user.raml
+
+    is:
+      - lib.error      
+
+    put:
+    type:
+      lib.putResource:
+        resourcePathName: user
+        resourcePath: user
+            
+  
+/categories:
+  get:
+    description: get all categories
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.categoryType[]
+            example: !include Examples/categories.raml
+
+  is:
+    - lib.error
+        
+  /{categoryid}:
+    get:
+      description: get category by id
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.categoryType
+              example: !include Examples/category.raml
+
+    is:
+      - lib.error    
+
+
+/orders:
+  description: get all orders
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: lib.orderType[]
+            example: !include Examples/orders.raml            
+
+  post:
+    description: create order
+    body:
+      application/json:
+        example: !include Examples/order.raml
+          
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                message: "order created"
+              }
+
+  is:
+    - lib.error
+      
+  /{orderid}:
+    description: get order by order id
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.orderType
+              example: !include Examples/order.raml            
+                 
+    is:
+      - lib.error
+                
+  /{userid}:
+    description: get order by user id
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.orderType
+              example: !include Examples/order.raml             
+                  
+    is:
+      - lib.error
+
+    put:
+      description: updat order
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  message: "order updated!"
+                }
+
+    delete:
+      description: remove order
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  message: "order deleted!"
+                }

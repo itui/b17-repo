@@ -1,0 +1,16 @@
+#%RAML 1.0 Library
+usage: all list of library
+
+types:
+  productType: !include dataType/product.raml
+  userType: !include dataType/user.raml
+  categoryType: !include dataType/category.raml
+  orderType: !include dataType/order.raml
+
+traits:
+  error: !include traits/errorResponse.raml
+
+resourceTypes:
+  
+  putResource: !include resourceTypes/put.raml
+ 
