@@ -1,0 +1,16 @@
+#%RAML 1.0 ResourceType
+get:
+    description: Get all orders
+    queryParameters:
+      userid:
+        displayName: userid
+        type: integer
+        description: user id to filter all orders pertaing to specific user
+        required: false
+        example: 1812
+    responses:
+      200:
+        body:
+          application/json:
+            type: orderDatatype []
+            example: !include ../Examples/orders.raml

@@ -1,0 +1,124 @@
+#%RAML 1.0
+title: Craft-online-shopping-Gr-B
+description: This is batch 17 Group-B Craft online shopping Restfull API specification 
+version: 1.0
+baseUri: http://shop.icraftsoft.net:8095/api
+uses:
+  lib: library.raml
+documentation: 
+   - !include documentation.raml
+
+/products:
+  description: All products available on Craft online shopping system
+  
+  type:
+    lib.productsresource
+  is:
+    lib.collections
+  /{productid}:
+    get:
+      description: Returns specific product based on productid
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.productDatatype
+              example: !include Example/product.raml  
+    is:
+      - lib.collections 
+                  
+/users:
+  description: All customers registered on Craft online shopping platform 
+  
+  type:
+    lib.usersresouce 
+  is:
+    lib.collections
+  
+  post:
+    description: create user account
+    responses: 
+      201:
+        body:
+          application/json:
+            example:
+                  {
+                  "userid": 1871
+                  }  
+    is:
+      lib.collections 
+  securedBy:
+    - lib.security   
+  put:
+    description: update specific user account information
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "updated sucessfully"
+              }
+    is:
+      - lib.collections
+    securedBy:
+      - lib.security
+           
+  /{userid}:
+    description: Get specific product based on userid 
+    get:
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.userDatatype
+              example: !include Example/user.raml
+    is:
+      lib.collections
+                      
+/orders:
+  description: All orders placed by customers on craft online shopping system
+  type:
+    lib.ordersresource
+  
+  is:
+    lib.collections
+                     
+  /{orderid}:
+    description: Enable to retrieve specific order 
+    get:
+      description: Get specific order order by orderid
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.orderDatatype
+              example: !include Example/order.raml
+    is:
+      lib.collections
+                
+/categories:
+  description: products categories avialable in the system
+  type:
+    lib.categoriesresource
+  
+  is:
+    lib.collections
+                    
+  /{categoryid}:
+    description: Products category avialable in the system
+    get:
+      description: Get specific category by Categoryid
+      responses:
+        200:
+          body:
+            application/json:
+              type: lib.categoryDatatype
+              example: !include Example/category.raml
+    is:
+      lib.collections
+                
+          
+              
+          
+

@@ -1,0 +1,28 @@
+#%RAML 1.0 Trait
+responses:
+  401:
+    body:
+      application/json:
+        example:
+          {
+            "message": "You don't have privilege"
+          }
+  404:
+      body:
+        application/json:
+          example:
+            {
+              message: "not found"
+            } 
+  
+  500:
+      body:
+        application/json:
+          example:
+            {
+              message: "server failed"
+            }
+
+    
+
+    

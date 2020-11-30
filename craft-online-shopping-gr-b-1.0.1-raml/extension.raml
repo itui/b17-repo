@@ -1,0 +1,180 @@
+#%RAML 1.0 Extension
+extends:  craft-online-shopping-gr-b.raml
+securedBy:
+  - lib.security
+# adminproducts, adminorders, adminusers and admincategories are used for administration support 
+/adminproducts:
+  description: administration product
+  get:
+    description: get all products
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include Examples/Products.raml
+    is:
+      - lib.collections      
+  put:
+    description:  updated by admin
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": " Product updated Succesfully"
+              }
+    is:
+      - lib.collections 
+  delete:
+    description: deleted by admin
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "Item deleted Succesfully"
+              }
+    is:
+      - lib.collections
+  post:
+    description: inserted by admin
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              {
+                "message": " Product inserted succesfully"
+              }
+    is:
+      - lib.collections
+/adminusers:
+  description: Administration users
+  get:
+    description: get all users
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include Examples/users.raml
+    is:
+      - lib.collections
+        
+  put:
+    description: get all users
+    responses:
+      200:
+        body:
+          application/json:
+            examples:
+              {
+                "message": "user updated"
+              }
+    is:
+      - lib.collections
+  delete:
+    description: Delete by admin 
+    responses:
+      200:
+        body:
+          application/json:
+            examples:
+              {
+                "message": "user is deleted"
+              }
+    is:
+      - lib.collections
+/adminorders:
+    description: Administration orders
+    get:
+      description: 
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include Examples/orders.raml
+      is:
+        - lib.collections
+    post:
+      description: 
+      responses:
+        201:
+          body:
+            application/json:
+              example:
+                {
+                  "message": "order created"
+                }
+      is:
+        - lib.collections
+                 
+    put:
+      description: 
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "message": "order updated"
+                }
+      is:
+        - lib.collections
+    delete:
+      description: 
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {
+                  "message": "deleted sucessfully"
+                }
+      is:
+        - lib.collections
+/admincategories:
+  description: Administration categories
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include Examples/categories.raml
+    is:
+      - lib.collections
+  post:
+    responses:
+      201:
+        body:
+          application/json:
+            example: !include Example/category.raml
+    is:
+      - lib.collections
+
+  put:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "category is updated"
+              }
+    is:
+      - lib.collections
+  delete:
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              {
+                "message": "deleted Successfuly"
+              }
+    is:
+      - lib.collections
+                
+
+

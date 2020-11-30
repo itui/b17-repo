@@ -1,0 +1,21 @@
+#%RAML 1.0 Library
+usage: all list of library
+types:
+  productDatatype: !include Type/product.raml
+  userDatatype: !include Type/user.raml
+  orderDatatype: !include Type/order.raml
+  categoryDatatype: !include Type/category.raml
+traits:
+  collections: !include Traits/trait.raml
+resourceTypes:
+  usersresouce: !include ResourceType/usersresourceType.raml
+  productsresource: !include ResourceType/productsresourceType.raml
+  ordersresource: !include ResourceType/ordersresourceType.raml
+  categoriesresource: !include ResourceType/categoriesresourceType.raml
+securitySchemes: 
+  security: !include securityScheme.raml
+
+
+
+
+

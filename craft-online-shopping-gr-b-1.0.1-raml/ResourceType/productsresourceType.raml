@@ -1,0 +1,16 @@
+#%RAML 1.0 ResourceType
+ get:
+    description: get all products
+    queryParameters:
+      categoryid:
+        displayName: categoryid
+        type: integer
+        description: categoryid to filter products by category
+        required: false
+        example: 10
+    responses:
+      200:
+        body:
+          application/json:
+            type: productDatatype []
+            example: !include ../Examples/Products.raml

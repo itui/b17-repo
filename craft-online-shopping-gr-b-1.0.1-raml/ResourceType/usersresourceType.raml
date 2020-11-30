@@ -1,0 +1,10 @@
+#%RAML 1.0 ResourceType
+get:
+    description: Return all users 
+    responses:
+      200:
+        body:
+          application/json:
+            type: userDatatype []
+            example: !include ../Examples/users.raml
+
