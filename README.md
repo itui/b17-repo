@@ -1,2 +1,2 @@
-title: craft-online-shopping raml 
-teams: Group A
+title: online-shopping group C 
+teams: Group C
