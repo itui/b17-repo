@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sockets="http://www.mulesoft.org/schema/mule/sockets"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sockets http://www.mulesoft.org/schema/mule/sockets/current/mule-sockets.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f57f357a-a0e4-44de-87b8-4bc0a4a27fb9" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="group_aFlowQ1" doc:id="e514726d-cb10-47a7-a65d-4254bb20c459" >
+		<http:listener doc:name="Listener" doc:id="799c2cf2-c848-4487-ab2c-5888771d2b7d" config-ref="HTTP_Listener_config" path="/G8"/>
+		<set-payload value="Hello world" doc:name="Set Payload" doc:id="9c934064-7eef-4cac-97ad-005aa87828c0" />
+		<logger level="INFO" doc:name="Logger" doc:id="292ed878-c336-42c4-a46b-a8da9ab267d9" message="#[payload]"/>
+	</flow>
+	<flow name="group_aFlowQ2" doc:id="3b5517da-4465-4c49-ab74-9f818b8ab7ba" >
+		<http:listener doc:name="Listener" doc:id="13583bd7-6c71-4b79-8bd8-aef3e14fc869" config-ref="HTTP_Listener_config" path="/G15"/>
+		<set-payload value="#[attributes.queryParams.FirstName as String  ++ '  ' ++  attributes.queryParams.LastName as String   ++ ' your age is '  ++ attributes.queryParams.Age as Number ++'.'  ++ ' thank you! ']" doc:name="Set Payload" doc:id="c80e2be7-e116-493f-a902-2d5c8e944408" />
+		<logger level="INFO" doc:name="Logger" doc:id="b836c947-2eda-4018-b48d-852f6715ece6" message="#[payload]"/>
+	</flow>
+	<flow name="group_aFlowQ5A" doc:id="314ec1a7-f09d-4b97-aa26-d14f7407f6d1" >
+		<http:listener doc:name="Listener" doc:id="eeabac45-feb1-4ebf-831e-3def7a3c2c5b" config-ref="HTTP_Listener_config" path="/G11"/>
+		<set-variable doc:name="Set Variable" doc:id="9f21bef3-ec12-42d4-a6d2-9643e69d7fea" variableName="M1" value="#[payload]"/>
+		<set-payload value="#[' This is warnning message From the ' ++ vars.M1]" doc:name="Set Payload" doc:id="2abb8e6a-d519-4213-a0db-3b48f1013133" />
+		<logger level="INFO" doc:name="Logger" doc:id="bca4ac36-08b0-4da4-8882-768cb822eebd" message="#[payload]"/>
+	</flow>
+	<flow name="group_aFlow" doc:id="9ec0c45a-b969-40eb-b8d8-2c98827cd1fc" >
+		<http:listener doc:name="Listener" doc:id="a6408096-96c6-4d62-a79f-9357a59b9595" config-ref="HTTP_Listener_config" path="/G12"/>
+		<set-variable value="This is warring message" doc:name="Set Variable" doc:id="08f940b2-412a-4f39-88f5-a152a1286a76" variableName="B1"/>
+		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="90771474-4d1c-401b-be48-b36de8bf5676" variableName="C1"/>
+		<set-payload value="#[vars.B1 ++ ' from the ' ++ vars.C1]" doc:name="Set Payload" doc:id="9d18e594-7dcb-4626-91e3-04b6757415dc" />
+		<logger level="INFO" doc:name="Logger" doc:id="34dba463-020c-4289-b652-8b579e10dcff" message="#[payload]"/>
+	</flow>
+	<flow name="group_aFlow1(Q3)" doc:id="2aeb357b-88e1-4380-8bc3-df9ae42d267b" >
+		<http:listener doc:name="Listener" doc:id="688b6c7b-3ab8-4f1b-8234-974824c87da9" config-ref="HTTP_Listener_config" path="/GA"/>
+		<ee:transform doc:name="Transform Message" doc:id="aef14b2d-e04c-4a2b-80e5-5f7b50797801" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+ payload.users]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="29945534-8765-45c6-9d07-46ad5838d7e2" message="#[payload]"/>
+	</flow>
+	<flow name="group_aFlow1" doc:id="62912ab1-c3d5-41e7-8ab3-ecec5c88d70b" >
+		<http:listener doc:name="Listener" doc:id="1ddbfada-e779-4a32-bff5-d3c1324a5905" config-ref="HTTP_Listener_config" path="/GB"/>
+		<ee:transform doc:name="Transform Message" doc:id="8b9f207b-dc2a-4ec5-96af-ad73da459c30">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="847455ce-0f81-4287-abcb-c2024cbc1edd" />
+	</flow>
+</mule>
