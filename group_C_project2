@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f5ba6afd-f506-42f7-9920-72ce97aaf8ea" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="hello-world" doc:id="38210fa3-8dbe-4477-be86-65eaff6921f8" >
+		<http:listener doc:name="Listener" doc:id="760dcc0e-abf5-4818-81e4-c91fb695fedd" config-ref="HTTP_Listener_config" path="/hello"/>
+		<set-payload value="Hello World" doc:name="Set Payload" doc:id="19fde9ed-7d21-4ef9-a404-6cd7400251e7" />
+	</flow>
+	<flow name="user-info" doc:id="7a960d8f-3929-4316-8565-d19bc3b54f59" >
+		<http:listener doc:name="Listener" doc:id="283fedff-ac35-4c92-9809-5f8d87aeb377" config-ref="HTTP_Listener_config" path="/user"/>
+		<set-variable value="#[attributes.queryParams.fName]" doc:name="first Name" doc:id="8fba316d-47cc-46ea-a9c7-87e0e28dafd8" variableName="firstName"/>
+		<set-variable value="#[attributes.queryParams.lName]" doc:name="last Name" doc:id="eadb04fb-b01a-482b-9216-c5049769f34a" variableName="lastName"/>
+		<set-variable value="#[attributes.queryParams.age]" doc:name="Age" doc:id="d02bb635-6919-4507-ac5a-f04c28edf4be" variableName="age"/>
+		<set-payload value="#[(vars.firstName default &quot;&quot;) ++ ' ' ++ (vars.lastName default &quot;&quot;) ++ ' Your Age is ' ++ (vars.age default &quot;&quot;) ++ ' Thank you!']" doc:name="Set Payload" doc:id="a65e29b3-45be-4652-813f-8f1ea1a9fbf8" />
+	</flow>
+	<flow name="user-info-xml-to-csv" doc:id="fd2cf071-e419-43b7-a179-2a6f1418af0b" >
+		<http:listener doc:name="Listener" doc:id="79688a35-9d18-4a25-bc46-b4f9be979571" config-ref="HTTP_Listener_config" path="/userxml"/>
+		<ee:transform doc:name="Transform Message" doc:id="944d4e85-0b14-412f-82ac-36b001562a74" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+ {
+		Fname: payload.user.Fname,
+		Lname: payload.user.Lname,
+		Age: payload.user.Age,
+		address: payload.user.address,
+		city: payload.user.city,
+		state: payload.user.state,
+		phoneNo: payload.user.phoneNo
+	}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="csv-to-logger-json" doc:id="1c1d4b40-342b-4273-a94d-a6c78a0c2d54" >
+		<http:listener doc:name="Listener" doc:id="4a66cc14-0bea-43a2-b2ac-0ca18b490b49" config-ref="HTTP_Listener_config" path="/usertoconsole"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3bce8b4e-fb2b-4a9b-ae69-1da55a118dd3" message="#[payload]" />
+		<ee:transform doc:name="Transform Message" doc:id="7c48239c-ac0a-4d59-856b-6125fd879f0a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	Fname: payload01.Fname,
+	Lname: payload01.Lname,
+	Age: payload01.Age,
+	address: payload01.address,
+	city: payload01.city,
+	state: payload01.state,
+	phoneNo: payload01.phoneNo
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="error-message" doc:id="7ecff808-f086-4f55-a455-fb42e23a2eb2" >
+		<http:listener doc:name="Listener" doc:id="6ab9b66f-9c52-42c2-abe6-d5647cf9479d" config-ref="HTTP_Listener_config" path="/message"/>
+		<set-variable value="This is Warning Message " doc:name="Set Variable" doc:id="fc17cdfa-35fe-4826-a44e-69ff11cd8ee6" variableName="warning-message"/>
+		<set-payload value="#[vars.&quot;warning-message&quot; ++ ' from the ' ++ message.payload as String]" doc:name="Set Payload" doc:id="5b515c29-bd02-401e-bbd6-573035375291" />
+	</flow>
+</mule>
