@@ -1,0 +1,126 @@
+Aster Nega, [14.12.20 00:39]
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+  xmlns="http://www.mulesoft.org/schema/mule/core"
+  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+  <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="db823b18-075a-4fb6-937c-7e46da92b87c" >
+    <http:listener-connection host="0.0.0.0" port="8081" />
+  </http:listener-config>
+  <flow name="questions1" doc:id="97d5933b-f848-4135-906e-89fa9646097a" >
+    <http:listener doc:name="Listener" doc:id="f03f7251-3fba-419e-9e82-0d762a4e8e3b" config-ref="HTTP_Listener_config" path="/index"/>
+    <ee:transform doc:name="Transform Message" doc:id="5afd1f4a-c069-4b37-9f22-6de4cf3fb9ae" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.user map (value, index) -> {
+  (index): value
+}]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="question2" doc:id="2aab6fcf-c661-4f82-9698-3666a2bede9d" >
+    <http:listener doc:name="Listener" doc:id="79d82f3e-e0b8-4f64-90a0-3d8116776585" config-ref="HTTP_Listener_config" path="/price"/>
+    <ee:transform doc:name="Transform Message" doc:id="64d6bf3e-0988-4694-bbea-6da13936764c" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+---
+payload map  {
+  id:$.id,
+  name:"ABC -> " ++ $.itemname,
+  code:"Q123 ->  " ++ $.itemcode,
+  price:$.price *2
+  
+ }]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="question3" doc:id="c8502fb2-f2e0-40fb-b5a7-d192a8cbdd3e" >
+    <http:listener doc:name="Listener" doc:id="9e14c6d5-84f6-4ccb-88cb-34ee629a1c21" config-ref="HTTP_Listener_config" path="/xml"/>
+    <ee:transform doc:name="Transform Message" doc:id="4993c9f6-f08a-4c97-b30c-645fed63b576" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+"List_of_Items":{
+  (payload map(value,index) ->{
+    item @((value)):null
+})
+}
+//"List_of_Items": { (payload map (value,index) ->{
+// item @(id:value.id, itemname:value.itemname, itemcode:value.itemcode, price: value.price): 
+// null})}
+]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="puestion4" doc:id="9a704282-9d3f-4d32-8fbb-38ee14763d6d" >
+    <http:listener doc:name="Listener" doc:id="280b2bd8-998e-45b8-bf12-dddde421ca29" config-ref="HTTP_Listener_config" path="/josn"/>
+    <ee:transform doc:name="Transform Message" doc:id="84cf14cf-7c43-40d3-9698-83d569e1f01d" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+//payload map
+// ($.id ++ " , " ++ $.itemname ++ " , " ++$.itemcode++ " ," ++ $.price)
+ Allitems:{
+   item:(payload map($.id ++ " , " ++ $.itemname++ " , "++ $.itemcode ++ " , " ++ $.price)
+   
+ )}
+ ]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="quetion5" doc:id="5ef1389e-2a04-41e7-a900-b7d9a4169ac7" >
+    <http:listener doc:name="Listener" doc:id="8e570f65-9a0c-40e5-8095-e6b96a57849d" config-ref="HTTP_Listener_config" path="/upper"/>
+    <ee:transform doc:name="Transform Message" doc:id="e10f688c-e97e-4154-8c6b-c0fb4df2c68a" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+ users: payload.user map (item, index) -> {
+      user: item mapObject (value, key) -> {
+      (upper(key)): value
+      }
+}]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="quetion6" doc:id="09279b6d-e87f-4584-89a3-74e22d92a70b" >
+
+Aster Nega, [14.12.20 00:39]
+<http:listener doc:name="Listener" doc:id="99a48a6c-a449-4ebc-a2a0-8661fa66015a" config-ref="HTTP_Listener_config" path="/xmlAge"/>
+    <ee:transform doc:name="Transform Message" doc:id="26e6d8ae-e71a-4e36-bad4-5310d2a290c6" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload.employeers.*employee.empAge]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+  <flow name="project2homeworkFlow" doc:id="58038687-19a0-4d92-845f-dfe11563cd76" >
+    <http:listener doc:name="Listener" doc:id="4eceddfa-5981-457d-bf08-a0e347645507" config-ref="HTTP_Listener_config" path="/maping"/>
+    <ee:transform doc:name="Transform Message" doc:id="13fc17ce-07af-4528-ac16-0df21a4f609a" >
+      <ee:message >
+        <ee:set-payload ><![CDATA[%dw 2.0
+output application/csv
+---
+
+payload.employeers.*employee map (value, index) -> {  
+  "employee Full Info" : 
+    "employee Name: " ++ value.empName ++ " " ++
+    "employee Age: " ++ value.empAge ++ " " ++
+    "employee Salary: " ++ value.empSalary ++ " " ++ "employee company: CraftSoftware"
+  
+}
+]]></ee:set-payload>
+      </ee:message>
+    </ee:transform>
+  </flow>
+</mule>
