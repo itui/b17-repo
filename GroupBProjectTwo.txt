@@ -37,7 +37,7 @@ payload.user
 <age>35</age>
 <address>3520 Forthwashington st NW apt #3 </address>
 <city>Silverspring </city>
-<sate>Maryland</sate>
+<state>Maryland</state>
 <phoneno>2407898452</phoneno> 
 </user>*/
 
