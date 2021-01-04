@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2f2bda0f-3522-4032-9fec-581d7dff3e98" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="12d7a644-cafd-4369-9324-73fa58918e06" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="@Aya#526969" database="craft_Online_Shopping" />
+	</db:config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="93157c99-e540-4209-844a-2d5c96961659" >
+		<http:request-connection host="shop.icraftsoft.net" port="8095" />
+	</http:request-config>
+	<flow name="Q1-select-from-Craft-url" doc:id="2af08d46-3d75-4593-af1d-de35e64afa4f" >
+		<http:listener doc:name="Get products" doc:id="098299e8-872b-4585-9609-8b46ae34d9aa" path="/fetchproducts" config-ref="HTTP_Listener_config"/>
+		<http:request method="GET" doc:name="Request" doc:id="5665b716-1cc3-4761-8445-77b25346ebb0" config-ref="HTTP_Request_configuration" path="/products"/>
+		<ee:transform doc:name="product" doc:id="a7e0a32f-61f8-4c48-ae9a-5f6d5e0cc6d5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="products" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="calling BulkInsert" doc:id="30c55b7a-9da4-4d43-bc50-d4695f58c8a5" name="Q1-BulkInsert-to-database"/>
+	</flow>
+	<sub-flow name="Q1-BulkInsert-to-database" doc:id="f07137d1-3d2c-4679-bed4-05d1c6efdb2d" >
+		<ee:transform doc:name="filter product by price" doc:id="1f048c3a-e7f4-40fe-b04f-d0864ed3ad2b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+vars.products filter ($.price > 5000)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="7fdc30c4-3385-4eed-ab29-00d9d344688a" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO product1(categoryid, name, description, video_url, price)
+value(:categoryid,:name,:description,:video_url,:price);]]></db:sql>
+		</db:bulk-insert>
+		<db:select doc:name="Select from database" doc:id="461ee382-6987-49ff-8ac5-835fd6ec7159" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM product1;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="payload" doc:id="67e24094-4a48-47d4-bd88-e7333d21b6b0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<flow name="Q2-groupc-project-4Flow" doc:id="85888ceb-f785-479d-a8d4-0d80b08fe6cd" >
+		<http:listener doc:name="GET /user or product" doc:id="3122b645-a732-45c8-877e-ba20e74d1987" config-ref="HTTP_Listener_config" path="/retrive/{type}"/>
+		<choice doc:name="Choice" doc:id="ff134412-6361-4fc2-9d2f-e922cf29ba25" >
+			<when expression="#[attributes.uriParams.'type' == 'users']">
+				<db:select doc:name="get user" doc:id="1e263923-b25b-421c-9a21-bbd7277f8730" config-ref="Database_Config">
+					<db:sql ><![CDATA[SELECT * FROM user1;]]></db:sql>
+				</db:select>
+			</when>
+			<when expression="#[attributes.uriParams.'type' == 'products']">
+				<db:select doc:name=" get products" doc:id="fd3114a5-026d-4da5-a11d-cf1927562e99" config-ref="Database_Config">
+					<db:sql ><![CDATA[SELECT * FROM product1;]]></db:sql>
+				</db:select>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Notification Message" doc:id="a73b3867-5757-481a-a1b4-81f9ed1156fb" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "You didn't request User or Product"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="payload" doc:id="d11ffc27-e1ed-49f8-91b7-546eff0c569a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="Q3-order-Flow" doc:id="6687c37f-d227-4bfe-aa46-5d3444d77f77" >
+		<http:listener doc:name="GET /order greater and less than 5000" doc:id="1672d6bc-694a-4218-9eee-d5dcd8d9e734" config-ref="HTTP_Listener_config" path="/order"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="5509fd03-efd7-4513-b0a7-73f45f4f6f0f" >
+			<route >
+				<db:select doc:name="Selct &gt; 5000" doc:id="d831a6c2-fb47-4b45-8a09-1483fcbc4d96" config-ref="Database_Config">
+					<db:sql ><![CDATA[SELECT * FROM order1 
+WHERE amount > 5000;]]></db:sql>
+				</db:select>
+			</route>
+			<route >
+				<db:select doc:name="Select &lt; 5000" doc:id="5d01a066-425a-4c50-9415-1e78b8254db0" config-ref="Database_Config">
+					<db:sql ><![CDATA[SELECT * FROM order1 
+WHERE amount < 5000;]]></db:sql>
+				</db:select>
+			</route>
+			<route >
+				<flow-ref doc:name="calling write to file" doc:id="6f362934-302e-46d5-81e9-6eae978153db" name="Q3-write-to-file-Sub_Flow"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="38e06aaf-2aa7-4ffb-9ab0-a29564970608" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+flatten(payload...payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<sub-flow name="Q3-write-to-file-Sub_Flow" doc:id="3e86fb0a-172f-4a3f-a8d3-cb0d8502dd4d" >
+		<file:write doc:name="Write " doc:id="d233e72e-a8cc-46c4-87d6-a7b7da21353b" path="C:\Users\linco_000\AnypointStudio\studio-workspace\groupc-project-4\textFile\Q3"/>
+		<ee:transform doc:name="Transform Message" doc:id="2cb16127-6ed5-44f2-8a1c-6de020d33c6a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "written on the file!"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="Q4-nested-if-Sub_Flow" doc:id="c85018e8-e621-40e6-9c83-03a05e6e8aeb" >
+		<choice doc:name="Choice" doc:id="b81aef2e-4949-4c06-831c-269b60f865d6">
+					<when expression="#[(vars.'userNumber' == '1')]">
+						<ee:transform doc:name="Transform Message" doc:id="b0da90e3-5496-4d31-8c2f-2c5bf1c703c3">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "num is 1"
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</when>
+					<otherwise>
+						<ee:transform doc:name="Transform Message" doc:id="7ea10375-c3d1-4f9f-aad5-298be20b221e">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "num is less than 10"
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+					</otherwise>
+				</choice>
+	</sub-flow>
+	<flow name="Q4-if-else" doc:id="9fd311a1-bc10-4139-9e31-329b575664a8">
+		<http:listener doc:name="Condition" doc:id="dcf5e448-1edf-4d0a-a2e2-77828ffca044" config-ref="HTTP_Listener_config" path="/usernum/{num}" />
+		<set-variable value="#[attributes.uriParams.num]" doc:name="user Number" doc:id="25c9179d-597d-4485-a716-31f446a23bd6" variableName="userNumber" />
+		<choice doc:name="Choice" doc:id="f301abfb-f13b-45b7-9a11-d88994f4331b">
+			<when expression="#[vars.userNumber &lt; 10]">
+				<flow-ref doc:name="Flow Reference" doc:id="4f47ac31-9267-4ce3-ac12-f2e5c9f717af" name="Q4-nested-if-Sub_Flow"/>
+			</when>
+			<when expression="#[(vars.'userNumber' == '10')]" >
+				<ee:transform doc:name="Transform Message" doc:id="44e1066b-3f8d-4d0a-8a45-2394ebc90f4a">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "num is equal to 10"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Message" doc:id="0e620e9b-d09b-49f1-83f8-45f6314bf052">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "num is greater than 10"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
